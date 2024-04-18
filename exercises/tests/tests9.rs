@@ -27,7 +27,6 @@
 //
 // You should NOT modify any existing code except for adding two lines of attributes.
 
-#[link_name = "Foo"]
 extern "Rust" {
     fn my_demo_function(a: u32) -> u32;
     #[link_name = "my_demo_function"]

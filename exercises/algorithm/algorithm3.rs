@@ -1,12 +1,24 @@
 /*
-	sort
-	This problem requires you to implement a sorting algorithm
-	you can use bubble sorting, insertion sorting, heap sorting, etc.
+    sort
+    This problem requires you to implement a sorting algorithm
+    you can use bubble sorting, insertion sorting, heap sorting, etc.
 */
-// I AM NOT DONE
 
-fn sort<T>(array: &mut [T]){
-	//TODO
+fn sort<T: std::cmp::PartialOrd>(array: &mut [T]) {
+    let len = array.len();
+    for i in 0..len {
+        let mut min = &array[i];
+        let mut mi = i;
+        for j in i..len {
+            if array[j] < *min {
+                min = &array[j];
+                mi = j;
+            }
+        }
+        // swap
+        // mem::swap(&mut array[i], min);
+        array.swap(i, mi);
+    }
 }
 #[cfg(test)]
 mod tests {
@@ -18,13 +30,13 @@ mod tests {
         sort(&mut vec);
         assert_eq!(vec, vec![19, 37, 46, 57, 64, 73, 75, 91]);
     }
-	#[test]
+    #[test]
     fn test_sort_2() {
         let mut vec = vec![1];
         sort(&mut vec);
         assert_eq!(vec, vec![1]);
     }
-	#[test]
+    #[test]
     fn test_sort_3() {
         let mut vec = vec![99, 88, 77, 66, 55, 44, 33, 22, 11];
         sort(&mut vec);
