@@ -1,8 +1,7 @@
 /*
-	heap
-	This question requires you to implement a binary heap function
+    heap
+    This question requires you to implement a binary heap function
 */
-// I AM NOT DONE
 
 use std::cmp::Ord;
 use std::default::Default;
@@ -23,7 +22,7 @@ where
     pub fn new(comparator: fn(&T, &T) -> bool) -> Self {
         Self {
             count: 0,
-            items: vec![T::default()],
+            items: vec![],
             comparator,
         }
     }
@@ -38,18 +37,31 @@ where
 
     pub fn add(&mut self, value: T) {
         //TODO
+        self.items.push(value);
+        self.count += 1;
+        let mut i = self.count - 1;
+        // dbg!(&self.items[0]);
+        // panic!("");
+        while i > 0 {
+            let mut pi = self.parent_idx(i);
+            if (self.comparator)(&self.items[pi], &self.items[i]) {
+                break;
+            }
+            self.items.swap(pi, i);
+            i = pi;
+        }
     }
 
     fn parent_idx(&self, idx: usize) -> usize {
-        idx / 2
+        (idx - 1) / 2
     }
 
     fn children_present(&self, idx: usize) -> bool {
-        self.left_child_idx(idx) <= self.count
+        self.left_child_idx(idx) < self.count
     }
 
     fn left_child_idx(&self, idx: usize) -> usize {
-        idx * 2
+        idx * 2 + 1
     }
 
     fn right_child_idx(&self, idx: usize) -> usize {
@@ -57,8 +69,34 @@ where
     }
 
     fn smallest_child_idx(&self, idx: usize) -> usize {
-        //TODO
-		0
+        let li = self.left_child_idx(idx);
+        let ri = self.right_child_idx(idx);
+        if ri < self.count {
+            // 2 children
+            let mut mini = if (self.comparator)(&self.items[idx], &self.items[li]) {
+                idx
+            } else {
+                li
+            };
+
+            mini = if (self.comparator)(&self.items[mini], &self.items[li]) {
+                mini
+            } else {
+                li
+            };
+
+            mini
+        } else if li < self.count {
+            // 1 child
+            if (self.comparator)(&self.items[idx], &self.items[li]) {
+                idx
+            } else {
+                li
+            }
+        } else {
+            // no child
+            idx
+        }
     }
 }
 
@@ -85,7 +123,26 @@ where
 
     fn next(&mut self) -> Option<T> {
         //TODO
-		None
+        if self.count <= 0 {
+            None
+        } else {
+            self.items.swap(0, self.count - 1);
+            let ret = self.items.pop();
+            self.count -= 1;
+
+            let mut i = 0;
+            loop {
+                let mini = self.smallest_child_idx(i);
+                if mini == i {
+                    break;
+                } else {
+                    self.items.swap(i, mini);
+                    i = mini;
+                }
+            }
+
+            ret
+        }
     }
 }
 
